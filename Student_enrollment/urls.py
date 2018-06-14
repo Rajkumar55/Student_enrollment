@@ -21,8 +21,9 @@ from enrollment import views, urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('student/register/', views.RegistrationView.as_view({'post': 'create'})),
+    path('student/register/', csrf_exempt(views.register)),
     path('student/login/', csrf_exempt(views.login)),
     path('student/logout/', csrf_exempt(views.logout)),
+    path('student/password_reset/', csrf_exempt(views.reset_password)),
     path('course/', include(urls))
 ]

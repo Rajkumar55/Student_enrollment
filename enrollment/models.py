@@ -36,7 +36,7 @@ class Course(models.Model):
 
 
 class Enrollment(models.Model):
-    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_id')
     student_id = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
 

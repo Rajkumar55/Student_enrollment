@@ -25,16 +25,17 @@ def save_student_profile(data):
         serializer = StudentProfileSerializer(data=profile_data)
         is_valid = serializer.is_valid()
         if is_valid:
-            password = base64.b64decode(data.get('password', ''))
+            password = data.get('password', '')
+            # password = base64.b64decode(data.get('password', ''))
             user = User.objects.create_user(data.get('email'), data.get('email'), password)
             token = Token.objects.create(user=user)
             profile_data['meta_data']['user_id'] = user
             profile = serializer.save()
-            return True, token
+            return True, profile
         return False, serializer.errors.get('meta_data') if serializer.errors.get('meta_data') else serializer.errors
 
-    except binascii.Error as be:
-        return False, 'Password should be encoded in Base64 format'
+    # except binascii.Error as be:
+    #     return False, 'Password should be encoded in Base64 format'
 
     except Exception as e:
         return False, str(e)
@@ -58,8 +59,27 @@ def enroll_student(data):
             return True, 'success'
         return False, serializer.errors
 
+    except StudentProfile.DoesNotExist:
+        return False, 'Student Profile Does not Exist'
+
     except IntegrityError as ie:
         return False, 'Student already enrolled in the course'
+
+    except Exception as e:
+        return False, str(e)
+
+
+def leave_course(data):
+    try:
+        student_profile = StudentProfile.objects.get(user_id=data['student_id'])
+        Enrollment.objects.get(course_id=data['course_id'], student_id=student_profile).delete()
+        return True, None
+
+    except StudentProfile.DoesNotExist:
+        return False, 'Student Profile Does not Exist'
+
+    except Enrollment.DoesNotExist:
+        return False, 'Student not enrolled in the course'
 
     except Exception as e:
         return False, str(e)
