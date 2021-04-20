@@ -30,7 +30,7 @@ odfpy==1.3.6
 openpyxl==2.5.3
 placebo==0.8.1
 pluggy==0.6.0
-py==1.5.3
+py==1.10.0
 pytest==3.6.0
 pytest-django==3.2.1
 python-dateutil==2.6.1
